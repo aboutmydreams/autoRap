@@ -1,7 +1,5 @@
 import pygame
-from PIL import Image
-
-
+from playsound import playsound
 
 def play_voice(voice_file_path):
     '''用 pygame 库播放语音文件
@@ -20,4 +18,9 @@ def play_voice(voice_file_path):
             if event.type == pygame.QUIT:
                 sys.exit()
 
-# play_voice("try_test/me.wav")
+play_voice("try_test/me.wav")
+
+
+            
+# playsound("http://music.163.com/song/media/outer/url?id=562598065.mp3")
+playsound("./try_test/me.wav")
