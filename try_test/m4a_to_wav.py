@@ -1,24 +1,25 @@
-import os,sys
+from pydub import AudioSegment
+import argparse
+import os
+import os
+import sys
 folder = 'try_test'
 for filename in os.listdir(folder):
-       infilename = os.path.join(folder,filename)
-       if not os.path.isfile(infilename): continue
-       oldbase = os.path.splitext(filename)
-       newname = infilename.replace('.tmp', '.m4a')
-       output = os.rename(infilename, newname)
+    infilename = os.path.join(folder, filename)
+    if not os.path.isfile(infilename):
+        continue
+    oldbase = os.path.splitext(filename)
+    newname = infilename.replace('.tmp', '.m4a')
+    output = os.rename(infilename, newname)
 
 
-      
 # Convert m4a extension files to wav extension files
-      
-import os
-import argparse
 
-from pydub import AudioSegment
+
 # for (dirpath, dirnames, filenames) in os.walk("try_test"):
 #        print(dirpath, dirnames, filenames)
 
-def m4a_wav(folder_name="try_test",if_remove=True):
+def m4a_wav(folder_name="try_test", if_remove=True):
     formats_to_convert = ['.m4a']
 
     for (dirpath, dirnames, filenames) in os.walk(folder_name):
@@ -29,8 +30,9 @@ def m4a_wav(folder_name="try_test",if_remove=True):
                 file_extension_final = file_extension.replace('.', '')
                 try:
                     track = AudioSegment.from_file(filepath,
-                            file_extension_final)
-                    wav_filename = filename.replace(file_extension_final, 'wav')
+                                                   file_extension_final)
+                    wav_filename = filename.replace(
+                        file_extension_final, 'wav')
                     wav_path = dirpath + '/' + wav_filename
                     print('CONVERTING: ' + str(filepath))
                     file_handle = track.export(wav_path, format='wav')
@@ -39,4 +41,5 @@ def m4a_wav(folder_name="try_test",if_remove=True):
                 except:
                     print("ERROR CONVERTING " + str(filepath))
 
-m4a_wav(folder_name="try_test",if_remove=False)
+
+m4a_wav(folder_name="try_test", if_remove=False)
