@@ -12,10 +12,7 @@ def enframe(wave_data, nw, inc, winfunc):
     inc:相邻帧的间隔（同上定义）
     '''
     wlen = len(wave_data)  # 信号总长度
-    if wlen <= nw:  # 若信号长度小于一个帧的长度，则帧数定义为1
-        nf = 1
-    else:  # 否则，计算帧的总长度
-        nf = int(np.ceil((1.0*wlen-nw+inc)/inc))
+    nf = 1 if wlen <= nw else int(np.ceil((1.0*wlen-nw+inc)/inc))
     pad_length = int((nf-1)*inc+nw)  # 所有帧加起来总的铺平后的长度
     zeros = np.zeros((pad_length-wlen,))  # 不够的长度使用0填补，类似于FFT中的扩充数组操作
     pad_signal = np.concatenate((wave_data, zeros))  # 填补后的信号记为pad_signal
@@ -74,7 +71,7 @@ for i in range(frameNum):
             fbank[m - 1, k] = (k - bin[m - 1]) / (bin[m] - bin[m - 1])
         for k in range(f_m, f_m_plus):
             fbank[m - 1, k] = (bin[m + 1] - k) / (bin[m + 1] - bin[m])
-    filter_banks = np.dot(yf[0:129], fbank.T)
+    filter_banks = np.dot(yf[:129], fbank.T)
     filter_banks = np.where(filter_banks == 0, np.finfo(
         float).eps, filter_banks)  # 数值稳定性
     filter_banks = 10 * np.log10(filter_banks)  # dB
