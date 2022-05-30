@@ -25,7 +25,7 @@ def m4a_wav(folder_name="try_test", if_remove=True):
     for (dirpath, dirnames, filenames) in os.walk(folder_name):
         for filename in filenames:
             if filename.endswith(tuple(formats_to_convert)):
-                filepath = dirpath + '/' + filename
+                filepath = f'{dirpath}/{filename}'
                 (path, file_extension) = os.path.splitext(filepath)
                 file_extension_final = file_extension.replace('.', '')
                 try:
@@ -33,13 +33,13 @@ def m4a_wav(folder_name="try_test", if_remove=True):
                                                    file_extension_final)
                     wav_filename = filename.replace(
                         file_extension_final, 'wav')
-                    wav_path = dirpath + '/' + wav_filename
-                    print('CONVERTING: ' + str(filepath))
+                    wav_path = f'{dirpath}/{wav_filename}'
+                    print(f'CONVERTING: {str(filepath)}')
                     file_handle = track.export(wav_path, format='wav')
                     if if_remove:
                         os.remove(filepath)
                 except:
-                    print("ERROR CONVERTING " + str(filepath))
+                    print(f"ERROR CONVERTING {str(filepath)}")
 
 
 m4a_wav(folder_name="try_test", if_remove=False)

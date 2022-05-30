@@ -29,7 +29,7 @@ def dft(audio, sr, n=None):
        sr: 是音频文件的采样率。
     返回DFT后的频率数组及相应的幅值和音频文件的采样率。
     '''
-    if(n == None):
+    if n is None:
         n = audio.shape[0]  # 音频时间序列的长度
 
     y = np.fft.rfft(a=audio, n=n)  # 离散傅里叶变换（DFT），返回一个长度为len(audio)/2+1的复数数组
@@ -43,10 +43,7 @@ def dft(audio, sr, n=None):
 def idft(y, n=None):
     '''逆DFT变换，是指将DFT得到的复数数组重新变换为音频时间序列的形式'''
     # y是对音频进行DFT的结果，n是DFT时设置的值；
-    if(n == None):
-        input = np.fft.irfft(y)
-    else:
-        input = np.fft.irfft(y, n)
+    input = np.fft.irfft(y) if n is None else np.fft.irfft(y, n)
     input = np.array(np.clip(np.round(input), -2**15, 2**15-1), dtype=np.int16)
     return input
 
@@ -90,7 +87,7 @@ def istft(y, n):  # n指音频时间序列的长度
 
 # ______________________奇异谱分析法(SSA)______________________________________________________________
 
-def ssa(data, L, res):  # （注：所有序列都是按从0开始算的）
+def ssa(data, L, res):    # （注：所有序列都是按从0开始算的）
     '''奇异谱分析SSA的实现，参考自：https://blog.csdn.net/u012947501/article/details/84999765
     包括对音频数据进行奇异值分解(SVD)和重构两部分
     参数：
@@ -124,7 +121,6 @@ def ssa(data, L, res):  # （注：所有序列都是按从0开始算的）
 #     v_ = s_inv.dot(u_.T).dot(X)                               # 计算右奇异矩阵
     # 若是用于奇异谱分析，这里就不用乘s_inv（即奇异值矩阵的逆），因为重构计算rca时需要再次乘以np.sqrt(s_)（即奇异值矩阵），所以这里不乘后面也就不用乘
     v_ = (u_.T).dot(X)
-
 #     #方法二：
 #     u, s, vh = np.linalg.svd(X)                             # 这里的u、s和vh分别代表左奇异矩阵、奇异值矩阵和右奇异矩阵
 
@@ -138,13 +134,13 @@ def ssa(data, L, res):  # （注：所有序列都是按从0开始算的）
     Kp = max(L, K)
 
     # 重构
-    for k in range(0, Lp-1):
-        for m in range(0, k+1):
+    for k in range(Lp-1):
+        for m in range(k+1):
             y[k] = y[k] + rca[m, k-m]
         y[k] = y[k] / (k+1)
 
     for k in range(Lp-1, Kp):
-        for m in range(0, Lp):
+        for m in range(Lp):
             y[k] = y[k] + rca[m, k-m]
         y[k] = y[k] / Lp
 
@@ -180,12 +176,12 @@ def seq_to_frame(y, frame_length=2048, hop_length=None):
                    constant_values=0)      # 将原始音频数据y填充到预计的长度 ，用0填充
 
     # 对填充的音频数据y_pad进行分帧
-    yy = []
-    for i in range(0, pre_y_len-frame_length+1, hop_length):
-        yy.append(y_pad[i:i+frame_length])
-    # 分帧后的结果，shape(帧数, frame_length)
-    y_frames = np.array(yy)
-    return y_frames
+    yy = [
+        y_pad[i : i + frame_length]
+        for i in range(0, pre_y_len - frame_length + 1, hop_length)
+    ]
+
+    return np.array(yy)
 
 
 def frame_to_seq(y_frames, hop_length=None, org_len=None):
